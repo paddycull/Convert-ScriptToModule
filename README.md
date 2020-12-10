@@ -1,14 +1,14 @@
 # Convert-ScriptToModule
-This is a PowerShell function to convert a ps1 file with several separate functions into a PowerShell module.
+This is a PowerShell function to convert one or more ps1 files with several separate functions into a PowerShell module.
 
 ## Summary 
-When I'm developing in PowerShell, I tend to create all my functions in one ps1 file while I'm developing it, as I find it easier to edit & compile quickly. I created this function to convert a ps1 file containing multiple functions, into a PowerShell module with everything included. The function will;
+When I'm developing in PowerShell, I tend to create all my functions in one ps1 file while I'm developing it, as I find it easier to edit & compile quickly. I created this function to convert one or more ps1 files containing multiple functions, into a PowerShell module with everything included. The function will;
 * Create a module directory with a given module name
 * Divide all functions into their own self-named script files
-* Initialise the psm1 and psd1 files with the required parameters and script to load the module properly
+* Initialise the psm1 and psd1 files with the required parameters and code to load the module properly
 * Divide the functions into Public and Private modules - functions are Public by default, Private functions are set using the **-Private** parameter. 
 * Detect Argument Completers and put them into an initialisation file, which is also loaded by the generated psd1 file. 
-* Scan the file for any "#require" for any required modules, and add them into the psd1 file.
+* Scan the file(s) for any "#requires" for any required modules or PowerShell version, and add them into the psd1 file.
 * Add the Public functions to the "FunctionsToExport" parameter in the psd1 file.
 
 ## Usage 
@@ -16,9 +16,7 @@ When I'm developing in PowerShell, I tend to create all my functions in one ps1 
 One thing to note before using this function, the source scripts have to be formatted a certain way. For function names to be discovered correctly, the line with the function declaration needs to have the opening curly bracket on the same line, or on the line immediately after it. 
 
 The closing bracket for the function needs to be at the very start of it's own line, without any spaces before it. So make sure there is no closing brackets at the very start of any line UNLESS it's a function ending.
-A handy way to make your script adhere to these rules is to open it in VSCode and press Shift+Alt+F - this will format the document to best practices. 
-
-e.g;
+A handy way to make your script adhere to these rules is to open it in VSCode and press Shift+Alt+F - this will format the document to best practices. Here are examples of what this means;
 ```` powershell
 #Open curly bracket on same line as function declaration
 function Get-Example {
@@ -41,9 +39,9 @@ Convert-ScriptToModule -ScriptPath "C:\PSScripts\AllInOne.ps1" -ModuleName TestM
 ````
 This example will read the AllInOne.ps1 file and extract all functions or argument completers, as well as any #require tags to determine any RequiredModules for the psd1 file. 
 - The module directory will be created at "C:\PSmodules\TestModule"
-- Each function will be placed in it's own self-named .ps1 file within a "Public" folder in the module directory
+- Each function will be placed in it's own self-named .ps1 file within a \Public folder in the module directory
 - Argument completers will be placed within \Init\LoadArgumentCompleters.ps1
-- The psd1 and psm1 files will be generated, with the required parameters such as any RequiredModules, and FunctionsToExport
+- The psd1 and psm1 files will be generated, with the required parameters such as any RequiredModules, PowerShellVersion and FunctionsToExport
 
 ### Example 2
 ```` powershell
