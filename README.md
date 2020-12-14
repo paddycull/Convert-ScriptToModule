@@ -6,7 +6,7 @@ When I'm developing in PowerShell, I tend to create all my functions in one ps1 
 * Create a module directory with a given module name
 * Divide all functions into their own self-named script files
 * Initialise the psm1 and psd1 files with the required parameters and code to load the module properly
-* Divide the functions into Public and Private modules - functions are Public by default, Private functions are set using the **-Private** parameter. 
+* Divide the functions into Public and Private folders - functions are Public by default, Private functions are set using the **-Private** parameter. 
 * Detect Argument Completers and put them into an initialisation file, which is also loaded by the generated psd1 file. 
 * Scan the file(s) for any "#requires" for any required modules or PowerShell version, and add them into the psd1 file.
 * Add the Public functions to the "FunctionsToExport" parameter in the psd1 file.
@@ -57,7 +57,7 @@ Convert-ScriptToModule -ScriptPath "C:\PsScriptsAllInOne.ps1" -ModuleName "Examp
 
 ````
 
-As you can see below, this command has created the module directory for the "ExampleModule" module, and placed it into the "C:\PSModule" folder, with Private, Public, and Init folders, as well as the psd1 and psm1 files. The Private folder will contain the "Get-Example1" and "Get-Example2" functions as specified in the command, all other functions will be placed into the Public folder and exported in the psm1 and psd1 file. The Init folder will contain any ArgumentCompleters found within the files, and that will also be loaded in the psm1 file. 
+As you can see below, this command has created the module directory for the "ExampleModule" module, and placed it into the "C:\PSModule" folder, with Private, Public, and Init folders, as well as the psd1 and psm1 files. The Private folder will contain the "Get-Example1" and "Get-Example2" functions as specified in the command, all other functions will be placed into the Public folder and exported in the psm1 and psd1 file. The Init folder will contain any ArgumentCompleters found within the files, and that will also be loaded via the psm1 file. 
 
 ![alt text](./Screenshots/FolderLayout.png "Example folder directory")
 
