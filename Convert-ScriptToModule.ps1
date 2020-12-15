@@ -41,7 +41,7 @@ function Get-Example
 #>
 function Convert-ScriptToModule {
     param (
-        # Path to the script(s) containing all the modules.
+        # Path to the script(s) containing all the functions.
         [Parameter(Mandatory)]
         [string[]]$ScriptPath,
 
@@ -80,7 +80,14 @@ function Convert-ScriptToModule {
         }
 
         $lineIndex = 0
+
         foreach($line in $ScriptFileContents) {
+
+            #Any empty lines not in a function should be excluded. We set this to false when a function end is reached - this will exclude empty lines between blocks of code in the source files and leave output files without leading empty lines.
+            if($line -ne '') {
+                $FunctionContent = $true
+            }
+
             $nextLineIndex = $lineIndex + 1
             
             #Extract the required modules and versions
@@ -96,7 +103,7 @@ function Convert-ScriptToModule {
             #If a function name is found we extract the name.
             if($line -like 'function*{*') {
                 #Regex the function name
-                $pattern = "function(.*?){"
+                $pattern = "(?i)function(.*?){"
                 $FunctionName = ([regex]::Match($line,$pattern).Groups[1].Value).Trim()
                 $FunctionList += $FunctionName
                 Write-Verbose "Found $FunctionName"
@@ -116,9 +123,9 @@ function Convert-ScriptToModule {
                 Write-Verbose "Found $line"        
             }
 
-            if($line -ne '') {
-                $ScriptFunction += $line
-            }
+            if($FunctionContent -eq $true) {
+                $ScriptFunction += $line  
+            }          
 
             if($line -like '}*') {
                 if($ArgumentCompleter) {
@@ -136,6 +143,7 @@ function Convert-ScriptToModule {
                 }
 
                 $ScriptFunction = @() #empty the current function variable
+                $FunctionContent = $false
             }
 
             $lineIndex++
