@@ -54,13 +54,25 @@ function Convert-ScriptToModule {
         [string]$ModulePath,
 
         # Names of the functions to be made Private for the module - functions are made public by default.
-        [string[]] $PrivateFunctions
+        [string[]] $PrivateFunctions,
+
+        # Used to overwrite an existing directory. 
+        [switch] $Force
     )
 
     $FullModulePath = "$ModulePath\$ModuleName"
     $PublicFunctionPath = "$FullModulePath\Public"
     $PrivateFunctionPath = "$FullModulePath\Private"
     $InitFunctionPath = "$FullModulePath\Init"
+
+    if((Test-Path $FullModulePath) -and !$Force) {
+        Write-Warning "$FullModulePath already exists. Use the -Force option to overwrite this directory."
+        Exit
+    }
+    elseif((Test-Path $FullModulePath) -and $Force) {
+        Write-Verbose "-Force flag passed, deleting $FullModulePath"
+        Remove-Item -Recurse "$FullModulePath"
+    }
     
 
     mkdir $PublicFunctionPath -Force
